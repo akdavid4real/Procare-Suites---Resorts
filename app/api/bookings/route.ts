@@ -146,8 +146,8 @@ export async function POST(request: NextRequest) {
     return Response.json({ success: false, message: 'Check-out must be after check-in.' }, { status: 400 })
   }
 
-  const fromEmail = process.env.BOOKING_FROM_EMAIL || 'Procare Suites & Resorts <bookings@procaresuites.com.ng>'
-  const adminEmail = process.env.BOOKING_ADMIN_EMAIL || 'info@procaresuites.com.ng'
+  const fromEmail = 'Procare Suites & Resorts <info@procaresuites.com.ng>'
+  const adminEmail = 'procaresuites@gmail.com'
   const bookingReference = `PCR-${Date.now().toString(36).toUpperCase()}`
 
   const safeName = escapeHtml(guestName)
