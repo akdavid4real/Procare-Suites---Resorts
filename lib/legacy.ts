@@ -59,7 +59,7 @@ export function loadLegacyDocument(fileName: string): LegacyDocument {
     throw new Error(`Unsupported legacy page: ${fileName}`)
   }
 
-  const html = fs.readFileSync(fullPath, 'utf8')
+  const html = fs.readFileSync(/* turbopackIgnore: true */ fullPath, 'utf8')
 
   const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? 'Procare Suites & Resorts'
   const head = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i)?.[1] ?? ''
