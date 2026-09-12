@@ -14,19 +14,23 @@ const MIME_TYPES: Record<string, string> = {
 }
 
 function safeResolve(base: string, segments: string[]): string | null {
-  const root = path.resolve(process.cwd(), base)
-  const target = path.resolve(root, ...segments)
+  const root = path.resolve(/* turbopackIgnore: true */ process.cwd(), base)
+  const target = path.resolve(/* turbopackIgnore: true */ root, ...segments)
   if (target !== root && !target.startsWith(`${root}${path.sep}`)) return null
   return target
 }
 
 export function serveRepoFile(base: string, segments: string[]) {
   const target = safeResolve(base, segments)
-  if (!target || !fs.existsSync(target) || !fs.statSync(target).isFile()) {
+  if (
+    !target ||
+    !fs.existsSync(/* turbopackIgnore: true */ target) ||
+    !fs.statSync(/* turbopackIgnore: true */ target).isFile()
+  ) {
     return new Response('Not found', { status: 404 })
   }
 
-  const body = fs.readFileSync(target)
+  const body = fs.readFileSync(/* turbopackIgnore: true */ target)
   const ext = path.extname(target).toLowerCase()
 
   return new Response(new Uint8Array(body), {
