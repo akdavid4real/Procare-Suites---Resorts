@@ -80,7 +80,7 @@ async function sendResendEmail(input: {
   replyTo?: string
 }) {
   const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) throw new Error('RESEND_API_KEY is not configured')
+  if (!apiKey) throw new Error('RESEND_API_KEY is not configured for this deployment environment')
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -104,6 +104,13 @@ async function sendResendEmail(input: {
   }
 
   return result
+}
+
+function safeErrorMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : 'Unknown booking email error'
+  return message
+    .replace(/re_[A-Za-z0-9_-]+/g, '[redacted-api-key]')
+    .slice(0, 500)
 }
 
 export async function POST(request: NextRequest) {
@@ -215,16 +222,33 @@ export async function POST(request: NextRequest) {
       }
     })
   } catch (error) {
-    console.error('Booking email failed', error)
+    const diagnostic = safeErrorMessage(error)
+    console.error('Booking email failed', {
+      diagnostic,
+      vercelEnv: process.env.VERCEL_ENV ?? 'unknown',
+      hasResendApiKey: Boolean(process.env.RESEND_API_KEY),
+      fromEmail,
+      adminEmail
+    })
 
     if (nativeForm) {
       const errorUrl = new URL('/booking', request.url)
       errorUrl.searchParams.set('error', 'email')
+      if (process.env.VERCEL_ENV !== 'production') {
+        errorUrl.searchParams.set('reason', diagnostic)
+      }
       return NextResponse.redirect(errorUrl, 303)
     }
 
+    const previewDiagnostic = process.env.VERCEL_ENV !== 'production' ? diagnostic : undefined
+
     return Response.json(
-      { success: false, message: 'We could not send your booking request right now. Please try again or contact the hotel directly.' },
+      {
+        success: false,
+        message: previewDiagnostic
+          ? `Resend error: ${previewDiagnostic}`
+          : 'We could not send your booking request right now. Please try again or contact the hotel directly.'
+      },
       { status: 502 }
     )
   }
