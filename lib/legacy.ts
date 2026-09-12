@@ -23,6 +23,15 @@ const routeMap: Record<string, string> = {
   'booking.html': '/booking'
 }
 
+const legacyPagePaths: Record<string, string> = {
+  'index.html': path.join(process.cwd(), 'index.html'),
+  'rooms.html': path.join(process.cwd(), 'rooms.html'),
+  'dining.html': path.join(process.cwd(), 'dining.html'),
+  'facilities.html': path.join(process.cwd(), 'facilities.html'),
+  'contact.html': path.join(process.cwd(), 'contact.html'),
+  'booking.html': path.join(process.cwd(), 'booking.html')
+}
+
 function rewriteUrl(url: string): string {
   const trimmed = url.trim()
   if (/^(?:https?:|mailto:|tel:|#|data:|javascript:)/i.test(trimmed)) return url
@@ -45,7 +54,11 @@ function rewriteLegacyLinks(html: string): string {
 }
 
 export function loadLegacyDocument(fileName: string): LegacyDocument {
-  const fullPath = path.join(process.cwd(), fileName)
+  const fullPath = legacyPagePaths[fileName]
+  if (!fullPath) {
+    throw new Error(`Unsupported legacy page: ${fileName}`)
+  }
+
   const html = fs.readFileSync(fullPath, 'utf8')
 
   const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? 'Procare Suites & Resorts'
