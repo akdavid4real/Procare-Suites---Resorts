@@ -72,22 +72,22 @@
         <div id="booking-form-container" class="booking-form-container">
           <h2>Check Availability</h2>
 
-          <form id="booking-form" class="booking-form">
+          <form id="booking-form" class="booking-form" action="/api/bookings" method="post">
             <div class="form-grid">
               <div class="form-group">
                 <label for="guest-name">Full Name <span class="required">*</span></label>
-                <input type="text" id="guest-name" name="guestName" required placeholder="Enter your full name">
+                <input type="text" id="guest-name" name="guest_name" required placeholder="Enter your full name">
               </div>
 
               <div class="form-group">
                 <label for="guest-email">Email <span class="required">*</span></label>
-                <input type="email" id="guest-email" name="guestEmail" required placeholder="Enter your email address">
+                <input type="email" id="guest-email" name="guest_email" required placeholder="Enter your email address">
               </div>
 
               <div class="form-group">
                 <label for="check-in">Check-in Date <span class="required">*</span></label>
                 <div class="date-input">
-                  <input type="date" id="check-in" name="checkIn" required>
+                  <input type="date" id="check-in" name="check_in" required>
                   <i class="far fa-calendar"></i>
                 </div>
               </div>
@@ -95,14 +95,14 @@
               <div class="form-group">
                 <label for="check-out">Check-out Date <span class="required">*</span></label>
                 <div class="date-input">
-                  <input type="date" id="check-out" name="checkOut" required>
+                  <input type="date" id="check-out" name="check_out" required>
                   <i class="far fa-calendar"></i>
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="room-type">Room Type</label>
-                <select id="room-type" name="roomType">
+                <select id="room-type" name="room_type">
                   <option value="any">Any room type</option>
                   <option value="standard">Standard Room</option>
                   <option value="deluxe">Deluxe Suite</option>
@@ -137,7 +137,7 @@
 
             <div class="form-group">
               <label for="special-requests">Special Requests</label>
-              <textarea id="special-requests" name="specialRequests" rows="3" placeholder="Any special requests or requirements"></textarea>
+              <textarea id="special-requests" name="special_requests" rows="3" placeholder="Any special requests or requirements"></textarea>
             </div>
 
             <button type="submit" id="check-availability-btn" class="btn primary-btn full-width">Check Availability</button>
